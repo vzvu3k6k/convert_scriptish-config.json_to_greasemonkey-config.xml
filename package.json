@@ -1,0 +1,17 @@
+{
+  "name": "Convert_scriptish-config.json_to_greasemonkey-config.xml",
+  "version": "1.0.0",
+  "description": "Convert scriptish's scriptish-config.json to greasemonkey's config.xml",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "CC0",
+  "private": true,
+  "dependencies": {
+    "JSONStream": "^0.10.0",
+    "event-stream": "^3.2.1",
+    "xml": "^1.0.0"
+  }
+}
