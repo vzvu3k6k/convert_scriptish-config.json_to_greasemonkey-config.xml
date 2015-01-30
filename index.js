@@ -39,17 +39,14 @@ fs.createReadStream(process.argv[2])
         json[key] = Object.keys(json[key]);
       }
 
-      if(json[key] instanceof Array){
-        json[key].forEach(function(v){
-          var node = {};
-          node[childTags[key]] = v;
-          xmlNodes.push(node);
-        });
-      }else{
-        var node = {};
-        node[childTags[key]] = json[key];
-        xmlNodes.push(node);
+      if(!(json[key] instanceof Array)){
+        json[key] = [json[key]];
       }
+      json[key].forEach(function(v){
+        var node = {};
+        node[childTags[key]] = v;
+        xmlNodes.push(node);
+      });
     });
 
     scriptNodes.push({
