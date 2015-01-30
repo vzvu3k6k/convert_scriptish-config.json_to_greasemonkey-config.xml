@@ -34,7 +34,7 @@ fs.createReadStream(process.argv[2])
         return;
       }
 
-      // {'GM_addStyle': true} -> ['GM_addStyle']
+      // {GM_addStyle: true} -> ['GM_addStyle']
       if(key === 'grant'){
         json[key] = Object.keys(json[key]);
       }
