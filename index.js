@@ -19,38 +19,43 @@ var attrTable = {
 
 var scriptNodes = [];
 
+// Converts scripts.* into XML object
+var jsonToXmlObj = function(json){
+  var xmlAttrs = [];
+  var xmlNodes = [{_attr: xmlAttrs}];
+
+  Object.keys(json).forEach(function(key){
+    if(Object.keys(childTags).indexOf(key) === -1){
+      if(json[key] !== null && json[key] !== false
+         && json[key].length !== 0){
+        xmlAttrs[attrTable[key] || key] = json[key];
+      }
+      return;
+    }
+
+    // {GM_addStyle: true} -> ['GM_addStyle']
+    if(key === 'grant'){
+      json[key] = Object.keys(json[key]);
+    }
+
+    if(!(json[key] instanceof Array)){
+      json[key] = [json[key]];
+    }
+    json[key].forEach(function(v){
+      var node = {};
+      node[childTags[key]] = v;
+      xmlNodes.push(node);
+    });
+  });
+
+  return xmlNodes;
+};
+
 fs.createReadStream(process.argv[2])
   .pipe(JSONStream.parse('scripts.*'))
   .pipe(es.mapSync(function(json){
-    var xmlAttrs = [];
-    var xmlNodes = [{_attr: xmlAttrs}];
-
-    Object.keys(json).forEach(function(key){
-      if(Object.keys(childTags).indexOf(key) === -1){
-        if(json[key] !== null && json[key] !== false
-           && json[key].length !== 0){
-          xmlAttrs[attrTable[key] || key] = json[key];
-        }
-        return;
-      }
-
-      // {GM_addStyle: true} -> ['GM_addStyle']
-      if(key === 'grant'){
-        json[key] = Object.keys(json[key]);
-      }
-
-      if(!(json[key] instanceof Array)){
-        json[key] = [json[key]];
-      }
-      json[key].forEach(function(v){
-        var node = {};
-        node[childTags[key]] = v;
-        xmlNodes.push(node);
-      });
-    });
-
     scriptNodes.push({
-      Script: xmlNodes
+      Script: jsonToXmlObj(json)
     });
   }))
   .on('end', function(){
