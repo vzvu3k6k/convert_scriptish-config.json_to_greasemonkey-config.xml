@@ -1,6 +1,6 @@
 var xml = require('xml');
 var JSONStream = require('JSONStream');
-var es = require('event-stream');
+var reduce = require('stream-reduce');
 var fs = require('fs');
 
 // Lists keys that are converted an XML element
@@ -16,8 +16,6 @@ var attrTable = {
   downloadURL: 'installurl',
   updateURL: 'updateurl',
 };
-
-var scriptNodes = [];
 
 // Converts scripts.* into XML object
 var jsonToXmlObj = function(json){
@@ -53,11 +51,11 @@ var jsonToXmlObj = function(json){
 
 fs.createReadStream(process.argv[2])
   .pipe(JSONStream.parse('scripts.*'))
-  .pipe(es.mapSync(function(json){
-    scriptNodes.push({
+  .pipe(reduce(function(result, json){
+    return result.concat({
       Script: jsonToXmlObj(json)
     });
-  }))
-  .on('end', function(){
-    console.log(xml({UserScriptConfig: scriptNodes}));
+  }, []))
+  .on('data', function(xmlObj){
+    console.log(xml({UserScriptConfig: xmlObj}));
   });
