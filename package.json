@@ -4,7 +4,7 @@
   "description": "Convert scriptish's scriptish-config.json to greasemonkey's config.xml",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "node test.js"
   },
   "author": "",
   "license": "CC0",
