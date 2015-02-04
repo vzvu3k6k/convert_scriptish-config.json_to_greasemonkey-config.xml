@@ -49,13 +49,17 @@ var jsonToXmlObj = function(json){
   return xmlNodes;
 };
 
-fs.createReadStream(process.argv[2])
-  .pipe(JSONStream.parse('scripts.*'))
-  .pipe(reduce(function(result, json){
-    return result.concat({
-      Script: jsonToXmlObj(json)
+if(__filename === process.argv[1]){
+  fs.createReadStream(process.argv[2])
+    .pipe(JSONStream.parse('scripts.*'))
+    .pipe(reduce(function(result, json){
+      return result.concat({
+        Script: jsonToXmlObj(json)
+      });
+    }, []))
+    .on('data', function(xmlObj){
+      console.log(xml({UserScriptConfig: xmlObj}));
     });
-  }, []))
-  .on('data', function(xmlObj){
-    console.log(xml({UserScriptConfig: xmlObj}));
-  });
+}else{
+  exports.jsonToXmlObj = jsonToXmlObj;
+}
